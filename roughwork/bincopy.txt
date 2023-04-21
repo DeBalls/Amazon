@@ -1,0 +1,36 @@
+Removing anything that looks like a company name from text data can be a challenging task because there is no strict definition of what constitutes a company name. One approach you could try is to use a named entity recognition (NER) tool to identify and remove named entities that are labeled as organizations.
+
+Here is an example of how you could do this using the `spaCy` library:
+
+```python
+import pandas as pd
+import spacy
+
+# Load the data from the CSV file
+data = pd.read_csv('data.csv')
+
+# Load a spaCy model for named entity recognition
+nlp = spacy.load('en_core_web_sm')
+
+# Define a function to remove company names from a text
+def remove_company_names(text):
+    # Process the text with spaCy to extract named entities
+    doc = nlp(text)
+    # Iterate over the named entities and remove those labeled as organizations
+    for ent in doc.ents:
+        if ent.label_ == 'ORG':
+            text = text.replace(ent.text, '')
+    return text
+
+# Apply the function to the column
+data['COLUMN_NAME'] = data['COLUMN_NAME'].apply(remove_company_names)
+
+# Save the modified data to a new CSV file
+data.to_csv('modified_data.csv', index=False)
+```
+
+This code is similar to the previous example but uses `spaCy` to process the text and extract named entities. It defines a function `remove_company_names` that takes a text as input, processes it with `spaCy` to extract named entities, and removes those entities that are labeled as organizations (`ent.label_ == 'ORG'`).
+
+Next, it applies this function to the specified column using the `apply` method of the `pandas.Series` object. Finally, it saves the modified data to a new CSV file using `pandas.to_csv`.
+
+You will need to modify this code to specify the correct column name and install and load a `spaCy` model for named entity recognition. Note that this approach is not perfect and may not remove all company names or may remove other text that is not a company name. You can experiment with different NER tools and techniques to improve the results. 😊
